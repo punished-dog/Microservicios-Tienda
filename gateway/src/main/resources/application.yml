@@ -1,0 +1,91 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: usuarios-route
+          uri: lb://usuarios
+          predicates:
+            - Path=/api/usuarios/**
+
+        - id: productos-route
+          uri: lb://productos
+          predicates:
+            - Path=/api/productos/**
+
+        - id: inventario-route
+          uri: lb://inventario
+          predicates:
+            - Path=/api/inventario/**
+
+        - id: resenas-route
+          uri: lb://resenas
+          predicates:
+            - Path=/api/resenas/**
+
+        - id: carrito-route
+          uri: lb://carrito
+          predicates:
+            - Path=/api/carrito/**
+
+        - id: promociones-route
+          uri: lb://promociones
+          predicates:
+            - Path=/api/promociones/**
+
+        - id: pedidos-route
+          uri: lb://pedidos
+          predicates:
+            - Path=/api/pedidos/**
+
+        - id: envios-route
+          uri: lb://envios
+          predicates:
+            - Path=/api/envios/**
+
+        - id: pagos-route
+          uri: lb://pagos
+          predicates:
+            - Path=/api/pagos/**
+
+        - id: soporte-route
+          uri: lb://soporte
+          predicates:
+            - Path=/api/soporte/**
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+
+server:
+  port: ${SERVER_PORT:9090}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO

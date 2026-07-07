@@ -1,0 +1,648 @@
+{
+  "info": {
+    "name": "Tienda Microservicios",
+    "_postman_id": "tienda-microservicios-final",
+    "description": "Colección completa para testear los microservicios. Orden recomendado: Eureka → Usuarios → Productos → Inventario → Pedidos → Pagos → Envios → Carrito → Resenas → Promociones → Soporte",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gateway", "value": "http://localhost:9090", "type": "string" },
+    { "key": "eureka", "value": "http://localhost:8761", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "0. Eureka Server",
+      "item": [
+        {
+          "name": "Dashboard (ver servicios registrados)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{eureka}}/eureka/apps", "host": ["{{eureka}}"], "path": ["eureka", "apps"] }
+          }
+        },
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{eureka}}/actuator/health", "host": ["{{eureka}}"], "path": ["actuator", "health"] }
+          }
+        },
+        {
+          "name": "Instancias de USUARIOS",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{eureka}}/eureka/apps/USUARIOS", "host": ["{{eureka}}"], "path": ["eureka", "apps", "USUARIOS"] }
+          }
+        },
+        {
+          "name": "Instancias de PEDIDOS",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{eureka}}/eureka/apps/PEDIDOS", "host": ["{{eureka}}"], "path": ["eureka", "apps", "PEDIDOS"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Usuarios",
+      "item": [
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/usuarios", "host": ["{{gateway}}"], "path": ["api", "usuarios"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Juan\",\n  \"apellido\": \"Pérez\",\n  \"email\": \"juan@email.com\",\n  \"contrasena\": \"123456\",\n  \"telefono\": \"912345678\",\n  \"direccion\": \"Av. Principal 123\",\n  \"rol\": \"CLIENTE\"\n}" }
+          }
+        },
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/usuarios", "host": ["{{gateway}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "Obtener usuario por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/usuarios/1", "host": ["{{gateway}}"], "path": ["api", "usuarios", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/usuarios/1", "host": ["{{gateway}}"], "path": ["api", "usuarios", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Juan\",\n  \"apellido\": \"González\",\n  \"email\": \"juan@email.com\",\n  \"contrasena\": \"123456\",\n  \"telefono\": \"912345678\",\n  \"direccion\": \"Av. Actualizada 999\",\n  \"rol\": \"CLIENTE\"\n}" }
+          }
+        },
+        {
+          "name": "Eliminar usuario",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{gateway}}/api/usuarios/1", "host": ["{{gateway}}"], "path": ["api", "usuarios", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Productos",
+      "item": [
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/productos", "host": ["{{gateway}}"], "path": ["api", "productos"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Laptop Gamer\",\n  \"descripcion\": \"Laptop gaming de alta gama\",\n  \"precio\": 899990.0,\n  \"categoria\": \"Electronica\"\n}" }
+          }
+        },
+        {
+          "name": "Listar productos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/productos", "host": ["{{gateway}}"], "path": ["api", "productos"] }
+          }
+        },
+        {
+          "name": "Obtener producto por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/productos/1", "host": ["{{gateway}}"], "path": ["api", "productos", "1"] }
+          }
+        },
+        {
+          "name": "Buscar por categoria",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/productos/categoria/Electronica", "host": ["{{gateway}}"], "path": ["api", "productos", "categoria", "Electronica"] }
+          }
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/productos/1", "host": ["{{gateway}}"], "path": ["api", "productos", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Laptop Gamer Pro\",\n  \"descripcion\": \"Laptop gaming actualizada\",\n  \"precio\": 999990.0,\n  \"categoria\": \"Electronica\"\n}" }
+          }
+        },
+        {
+          "name": "Crear producto - precio negativo (debe fallar 500)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/productos", "host": ["{{gateway}}"], "path": ["api", "productos"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Producto invalido\",\n  \"descripcion\": \"Test validacion\",\n  \"precio\": -100.0,\n  \"categoria\": \"Test\"\n}" }
+          }
+        },
+        {
+          "name": "Obtener producto inexistente (debe fallar 404)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/productos/9999", "host": ["{{gateway}}"], "path": ["api", "productos", "9999"] }
+          }
+        },
+        {
+          "name": "Eliminar producto",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{gateway}}/api/productos/1", "host": ["{{gateway}}"], "path": ["api", "productos", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Inventario",
+      "item": [
+        {
+          "name": "Crear inventario",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/inventario", "host": ["{{gateway}}"], "path": ["api", "inventario"] },
+            "body": { "mode": "raw", "raw": "{\n  \"productoId\": 1,\n  \"cantidad\": 50,\n  \"stockMinimo\": 5,\n  \"ubicacion\": \"Bodega A\"\n}" }
+          }
+        },
+        {
+          "name": "Listar inventario",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/inventario", "host": ["{{gateway}}"], "path": ["api", "inventario"] }
+          }
+        },
+        {
+          "name": "Obtener inventario por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/inventario/1", "host": ["{{gateway}}"], "path": ["api", "inventario", "1"] }
+          }
+        },
+        {
+          "name": "Buscar por producto",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/inventario/producto/1", "host": ["{{gateway}}"], "path": ["api", "inventario", "producto", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar inventario",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/inventario/1", "host": ["{{gateway}}"], "path": ["api", "inventario", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"productoId\": 1,\n  \"cantidad\": 45,\n  \"stockMinimo\": 5,\n  \"ubicacion\": \"Bodega B\"\n}" }
+          }
+        },
+        {
+          "name": "Crear inventario - stock minimo negativo (debe fallar)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/inventario", "host": ["{{gateway}}"], "path": ["api", "inventario"] },
+            "body": { "mode": "raw", "raw": "{\n  \"productoId\": 1,\n  \"cantidad\": 50,\n  \"stockMinimo\": -1,\n  \"ubicacion\": \"Bodega A\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Pedidos",
+      "item": [
+        {
+          "name": "Crear pedido",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/pedidos", "host": ["{{gateway}}"], "path": ["api", "pedidos"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"cantidad\": 2,\n  \"total\": 1799980.0,\n  \"estado\": \"PENDIENTE\"\n}" }
+          }
+        },
+        {
+          "name": "Listar pedidos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pedidos", "host": ["{{gateway}}"], "path": ["api", "pedidos"] }
+          }
+        },
+        {
+          "name": "Obtener pedido por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pedidos/1", "host": ["{{gateway}}"], "path": ["api", "pedidos", "1"] }
+          }
+        },
+        {
+          "name": "Buscar por usuario",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pedidos/usuario/1", "host": ["{{gateway}}"], "path": ["api", "pedidos", "usuario", "1"] }
+          }
+        },
+        {
+          "name": "Buscar por estado",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pedidos/estado/PENDIENTE", "host": ["{{gateway}}"], "path": ["api", "pedidos", "estado", "PENDIENTE"] }
+          }
+        },
+        {
+          "name": "★ Obtener usuario del pedido (REST entre servicios)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pedidos/1/usuario", "host": ["{{gateway}}"], "path": ["api", "pedidos", "1", "usuario"] }
+          }
+        },
+        {
+          "name": "★ Obtener producto del pedido (REST entre servicios)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pedidos/1/producto", "host": ["{{gateway}}"], "path": ["api", "pedidos", "1", "producto"] }
+          }
+        },
+        {
+          "name": "Actualizar pedido",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/pedidos/1", "host": ["{{gateway}}"], "path": ["api", "pedidos", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"cantidad\": 2,\n  \"total\": 1799980.0,\n  \"estado\": \"CONFIRMADO\"\n}" }
+          }
+        },
+        {
+          "name": "Crear pedido - total negativo (debe fallar)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/pedidos", "host": ["{{gateway}}"], "path": ["api", "pedidos"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"cantidad\": 2,\n  \"total\": -500.0,\n  \"estado\": \"PENDIENTE\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Pagos",
+      "item": [
+        {
+          "name": "Crear pago",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/pagos", "host": ["{{gateway}}"], "path": ["api", "pagos"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pedidoId\": 1,\n  \"monto\": 1799980.0,\n  \"metodoPago\": \"TARJETA\",\n  \"estado\": \"COMPLETADO\"\n}" }
+          }
+        },
+        {
+          "name": "Listar pagos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pagos", "host": ["{{gateway}}"], "path": ["api", "pagos"] }
+          }
+        },
+        {
+          "name": "Obtener pago por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pagos/1", "host": ["{{gateway}}"], "path": ["api", "pagos", "1"] }
+          }
+        },
+        {
+          "name": "Buscar por pedido",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pagos/pedido/1", "host": ["{{gateway}}"], "path": ["api", "pagos", "pedido", "1"] }
+          }
+        },
+        {
+          "name": "Buscar por estado",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pagos/estado/COMPLETADO", "host": ["{{gateway}}"], "path": ["api", "pagos", "estado", "COMPLETADO"] }
+          }
+        },
+        {
+          "name": "★ Obtener pedido del pago (REST entre servicios)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/pagos/1/pedido", "host": ["{{gateway}}"], "path": ["api", "pagos", "1", "pedido"] }
+          }
+        },
+        {
+          "name": "Actualizar pago",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/pagos/1", "host": ["{{gateway}}"], "path": ["api", "pagos", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pedidoId\": 1,\n  \"monto\": 1799980.0,\n  \"metodoPago\": \"TRANSFERENCIA\",\n  \"estado\": \"COMPLETADO\"\n}" }
+          }
+        },
+        {
+          "name": "Crear pago - monto cero (debe fallar)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/pagos", "host": ["{{gateway}}"], "path": ["api", "pagos"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pedidoId\": 1,\n  \"monto\": 0.0,\n  \"metodoPago\": \"TARJETA\",\n  \"estado\": \"PENDIENTE\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Envios",
+      "item": [
+        {
+          "name": "Crear envio",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/envios", "host": ["{{gateway}}"], "path": ["api", "envios"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pedidoId\": 1,\n  \"usuarioId\": 1,\n  \"direccionDestino\": \"Av. Principal 123\",\n  \"estado\": \"EN_CAMINO\",\n  \"transportista\": \"Chilexpress\",\n  \"fechaEstimada\": \"2026-07-01\"\n}" }
+          }
+        },
+        {
+          "name": "Listar envios",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/envios", "host": ["{{gateway}}"], "path": ["api", "envios"] }
+          }
+        },
+        {
+          "name": "Obtener envio por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/envios/1", "host": ["{{gateway}}"], "path": ["api", "envios", "1"] }
+          }
+        },
+        {
+          "name": "Buscar por pedido",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/envios/pedido/1", "host": ["{{gateway}}"], "path": ["api", "envios", "pedido", "1"] }
+          }
+        },
+        {
+          "name": "Buscar por estado",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/envios/estado/EN_CAMINO", "host": ["{{gateway}}"], "path": ["api", "envios", "estado", "EN_CAMINO"] }
+          }
+        },
+        {
+          "name": "★ Obtener pedido del envio (REST entre servicios)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/envios/1/pedido", "host": ["{{gateway}}"], "path": ["api", "envios", "1", "pedido"] }
+          }
+        },
+        {
+          "name": "Actualizar envio",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/envios/1", "host": ["{{gateway}}"], "path": ["api", "envios", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pedidoId\": 1,\n  \"usuarioId\": 1,\n  \"direccionDestino\": \"Av. Principal 123\",\n  \"estado\": \"ENTREGADO\",\n  \"transportista\": \"Chilexpress\",\n  \"fechaEstimada\": \"2026-07-01\"\n}" }
+          }
+        },
+        {
+          "name": "Crear envio - sin direccion (debe fallar)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/envios", "host": ["{{gateway}}"], "path": ["api", "envios"] },
+            "body": { "mode": "raw", "raw": "{\n  \"pedidoId\": 1,\n  \"usuarioId\": 1,\n  \"direccionDestino\": null,\n  \"estado\": \"EN_CAMINO\",\n  \"transportista\": \"Chilexpress\",\n  \"fechaEstimada\": \"2026-07-01\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Carrito",
+      "item": [
+        {
+          "name": "Agregar al carrito",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/carrito", "host": ["{{gateway}}"], "path": ["api", "carrito"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"cantidad\": 2,\n  \"precioUnitario\": 899990.0\n}" }
+          }
+        },
+        {
+          "name": "Listar carrito",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/carrito", "host": ["{{gateway}}"], "path": ["api", "carrito"] }
+          }
+        },
+        {
+          "name": "Obtener item por ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/carrito/1", "host": ["{{gateway}}"], "path": ["api", "carrito", "1"] }
+          }
+        },
+        {
+          "name": "Carrito por usuario",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/carrito/usuario/1", "host": ["{{gateway}}"], "path": ["api", "carrito", "usuario", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar item",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/carrito/1", "host": ["{{gateway}}"], "path": ["api", "carrito", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"cantidad\": 3,\n  \"precioUnitario\": 899990.0\n}" }
+          }
+        },
+        {
+          "name": "Agregar al carrito - cantidad cero (debe fallar)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/carrito", "host": ["{{gateway}}"], "path": ["api", "carrito"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"cantidad\": 0,\n  \"precioUnitario\": 899990.0\n}" }
+          }
+        },
+        {
+          "name": "Eliminar del carrito",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{gateway}}/api/carrito/1", "host": ["{{gateway}}"], "path": ["api", "carrito", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Resenas",
+      "item": [
+        {
+          "name": "Crear resena",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/resenas", "host": ["{{gateway}}"], "path": ["api", "resenas"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"calificacion\": 5,\n  \"comentario\": \"Excelente producto, llegó rápido\"\n}" }
+          }
+        },
+        {
+          "name": "Listar resenas",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/resenas", "host": ["{{gateway}}"], "path": ["api", "resenas"] }
+          }
+        },
+        {
+          "name": "Resenas por producto",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/resenas/producto/1", "host": ["{{gateway}}"], "path": ["api", "resenas", "producto", "1"] }
+          }
+        },
+        {
+          "name": "Resenas por usuario",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/resenas/usuario/1", "host": ["{{gateway}}"], "path": ["api", "resenas", "usuario", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar resena",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/resenas/1", "host": ["{{gateway}}"], "path": ["api", "resenas", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"calificacion\": 4,\n  \"comentario\": \"Muy buen producto\"\n}" }
+          }
+        },
+        {
+          "name": "Crear resena - calificacion 6 (debe fallar)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/resenas", "host": ["{{gateway}}"], "path": ["api", "resenas"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"productoId\": 1,\n  \"calificacion\": 6,\n  \"comentario\": \"Test\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Promociones",
+      "item": [
+        {
+          "name": "Crear promocion",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/promociones", "host": ["{{gateway}}"], "path": ["api", "promociones"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Black Friday\",\n  \"descripcion\": \"Descuento especial\",\n  \"descuento\": 20.0,\n  \"productoId\": 1,\n  \"fechaInicio\": \"2026-07-01\",\n  \"fechaFin\": \"2026-07-05\",\n  \"activa\": true\n}" }
+          }
+        },
+        {
+          "name": "Listar promociones",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/promociones", "host": ["{{gateway}}"], "path": ["api", "promociones"] }
+          }
+        },
+        {
+          "name": "Promociones activas",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/promociones/activa/true", "host": ["{{gateway}}"], "path": ["api", "promociones", "activa", "true"] }
+          }
+        },
+        {
+          "name": "Promociones por producto",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/promociones/producto/1", "host": ["{{gateway}}"], "path": ["api", "promociones", "producto", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar promocion",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/promociones/1", "host": ["{{gateway}}"], "path": ["api", "promociones", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Black Friday Extended\",\n  \"descripcion\": \"Descuento extendido\",\n  \"descuento\": 25.0,\n  \"productoId\": 1,\n  \"fechaInicio\": \"2026-07-01\",\n  \"fechaFin\": \"2026-07-10\",\n  \"activa\": true\n}" }
+          }
+        },
+        {
+          "name": "Crear promocion - descuento 150 (debe fallar)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/promociones", "host": ["{{gateway}}"], "path": ["api", "promociones"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Test\",\n  \"descripcion\": \"Test\",\n  \"descuento\": 150.0,\n  \"productoId\": 1,\n  \"fechaInicio\": \"2026-07-01\",\n  \"fechaFin\": \"2026-07-05\",\n  \"activa\": true\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Soporte",
+      "item": [
+        {
+          "name": "Crear ticket",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/soporte", "host": ["{{gateway}}"], "path": ["api", "soporte"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"asunto\": \"Problema con mi pedido\",\n  \"descripcion\": \"Mi pedido no llegó en la fecha estimada\",\n  \"estado\": \"ABIERTO\",\n  \"prioridad\": \"ALTA\"\n}" }
+          }
+        },
+        {
+          "name": "Listar tickets",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/soporte", "host": ["{{gateway}}"], "path": ["api", "soporte"] }
+          }
+        },
+        {
+          "name": "Tickets por usuario",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/soporte/usuario/1", "host": ["{{gateway}}"], "path": ["api", "soporte", "usuario", "1"] }
+          }
+        },
+        {
+          "name": "Tickets por estado",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/soporte/estado/ABIERTO", "host": ["{{gateway}}"], "path": ["api", "soporte", "estado", "ABIERTO"] }
+          }
+        },
+        {
+          "name": "Tickets por prioridad",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{gateway}}/api/soporte/prioridad/ALTA", "host": ["{{gateway}}"], "path": ["api", "soporte", "prioridad", "ALTA"] }
+          }
+        },
+        {
+          "name": "Actualizar ticket",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/soporte/1", "host": ["{{gateway}}"], "path": ["api", "soporte", "1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"asunto\": \"Problema con mi pedido\",\n  \"descripcion\": \"Mi pedido no llegó en la fecha estimada\",\n  \"estado\": \"EN_PROCESO\",\n  \"prioridad\": \"ALTA\"\n}" }
+          }
+        },
+        {
+          "name": "Crear ticket - sin asunto (debe fallar)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{gateway}}/api/soporte", "host": ["{{gateway}}"], "path": ["api", "soporte"] },
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"asunto\": null,\n  \"descripcion\": \"Sin asunto\",\n  \"estado\": \"ABIERTO\",\n  \"prioridad\": \"ALTA\"\n}" }
+          }
+        }
+      ]
+    }
+  ]
+}

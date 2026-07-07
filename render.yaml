@@ -1,0 +1,65 @@
+services:
+  - type: web
+    name: eureka-server
+    runtime: docker
+    dockerfilePath: ./eureka-server/Dockerfile
+    dockerContext: ./eureka-server
+    plan: free
+
+  - type: web
+    name: gateway
+    runtime: docker
+    dockerfilePath: ./gateway/Dockerfile
+    dockerContext: ./gateway
+    plan: free
+    envVars:
+      - key: EUREKA_URL
+        sync: false
+
+  - type: web
+    name: usuarios
+    runtime: docker
+    dockerfilePath: ./usuarios/Dockerfile
+    dockerContext: ./usuarios
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: EUREKA_URL
+        sync: false
+
+  - type: web
+    name: productos
+    runtime: docker
+    dockerfilePath: ./productos/Dockerfile
+    dockerContext: ./productos
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: EUREKA_URL
+        sync: false
+
+  - type: web
+    name: pedidos
+    runtime: docker
+    dockerfilePath: ./pedidos/Dockerfile
+    dockerContext: ./pedidos
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: EUREKA_URL
+        sync: false
