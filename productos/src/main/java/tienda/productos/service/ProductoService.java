@@ -1,4 +1,5 @@
 package tienda.productos.service;
+import net.datafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,22 @@ public class ProductoService {
             throw new ProductoNoEncontradoException("Imposible eliminar. No existe producto con el ID " + id + ".");
         }
         this.productoRepository.deleteById(id);
+    }
+    public List<ProductoDTO> generarProductos(int cantidad) {
+        log.info("Generando {} productos de prueba", cantidad);
+        Faker faker = new Faker();
+        List<ProductoDTO> generados = new ArrayList<>();
+        for (int i = 0; i < cantidad; i++) {
+            Producto entidad = new Producto();
+            entidad.setNombre(faker.commerce().productName());
+            entidad.setDescripcion(faker.lorem().sentence());
+            entidad.setPrecio(Double.parseDouble(faker.commerce().price().replace(",", ".")) * 1000);
+            entidad.setCategoria(faker.commerce().department());
+            Producto guardado = this.productoRepository.save(entidad);
+            generados.add(convertirADTO(guardado));
+        }
+        log.info("Se generaron {} productos de prueba", cantidad);
+        return generados;
     }
     private ProductoDTO convertirADTO(Producto e) {
         return new ProductoDTO(e.getId(), e.getNombre(), e.getDescripcion(), e.getPrecio(), e.getCategoria());

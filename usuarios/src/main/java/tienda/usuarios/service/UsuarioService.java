@@ -1,5 +1,6 @@
 package tienda.usuarios.service;
 
+import net.datafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -84,6 +85,26 @@ public class UsuarioService {
         }
         this.usuarioRepository.deleteById(id);
         log.info("Usuario eliminado, id: {}", id);
+    }
+
+    public List<UsuarioDTO> generarUsuarios(int cantidad) {
+        log.info("Generando {} usuarios de prueba", cantidad);
+        Faker faker = new Faker();
+        List<UsuarioDTO> generados = new ArrayList<>();
+        for (int i = 0; i < cantidad; i++) {
+            Usuario entidad = new Usuario();
+            entidad.setNombre(faker.name().firstName());
+            entidad.setApellido(faker.name().lastName());
+            entidad.setEmail(faker.internet().emailAddress());
+            entidad.setContrasena(faker.internet().password(6, 12));
+            entidad.setTelefono(faker.phoneNumber().cellPhone());
+            entidad.setDireccion(faker.address().fullAddress());
+            entidad.setRol("CLIENTE");
+            Usuario guardado = this.usuarioRepository.save(entidad);
+            generados.add(convertirADTO(guardado));
+        }
+        log.info("Se generaron {} usuarios de prueba", cantidad);
+        return generados;
     }
 
     private UsuarioDTO convertirADTO(Usuario entidad) {

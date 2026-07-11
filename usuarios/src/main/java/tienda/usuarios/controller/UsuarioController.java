@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
@@ -12,6 +14,10 @@ import tienda.usuarios.dto.UsuarioDTO;
 import tienda.usuarios.service.UsuarioService;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -27,8 +33,12 @@ public class UsuarioController {
     @GetMapping
     @Operation(summary = "Listar todos los usuarios")
     @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente")
-    public List<UsuarioDTO> obtenerTodos() {
-        return this.usuarioService.listarTodos();
+    public CollectionModel<EntityModel<UsuarioDTO>> obtenerTodos() {
+        List<EntityModel<UsuarioDTO>> usuarios = this.usuarioService.listarTodos().stream()
+                .map(this::aModelo)
+                .collect(Collectors.toList());
+        return CollectionModel.of(usuarios,
+                linkTo(methodOn(UsuarioController.class).obtenerTodos()).withSelfRel());
     }
 
     @GetMapping("/{id}")
@@ -37,17 +47,25 @@ public class UsuarioController {
         @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    public ResponseEntity<UsuarioDTO> obtenerPorId(@PathVariable Long id) {
+    public EntityModel<UsuarioDTO> obtenerPorId(@PathVariable Long id) {
         UsuarioDTO dto = this.usuarioService.buscarPorId(id);
-        return ResponseEntity.ok(dto);
+        return aModelo(dto);
     }
 
     @PostMapping
     @Operation(summary = "Crear un nuevo usuario")
     @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente")
-    public ResponseEntity<UsuarioDTO> crear(@Valid @RequestBody UsuarioDTO dto) {
+    public ResponseEntity<EntityModel<UsuarioDTO>> crear(@Valid @RequestBody UsuarioDTO dto) {
         UsuarioDTO creado = this.usuarioService.crearUsuario(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(aModelo(creado));
+    }
+
+    @PostMapping("/generar/{cantidad}")
+    @Operation(summary = "Generar usuarios de prueba con datos aleatorios")
+    @ApiResponse(responseCode = "201", description = "Usuarios generados")
+    public ResponseEntity<List<UsuarioDTO>> generar(@PathVariable int cantidad) {
+        List<UsuarioDTO> generados = this.usuarioService.generarUsuarios(cantidad);
+        return ResponseEntity.status(HttpStatus.CREATED).body(generados);
     }
 
     @PutMapping("/{id}")
@@ -56,9 +74,9 @@ public class UsuarioController {
         @ApiResponse(responseCode = "200", description = "Usuario actualizado"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    public ResponseEntity<UsuarioDTO> actualizar(@PathVariable Long id, @Valid @RequestBody UsuarioDTO dto) {
+    public ResponseEntity<EntityModel<UsuarioDTO>> actualizar(@PathVariable Long id, @Valid @RequestBody UsuarioDTO dto) {
         UsuarioDTO actualizado = this.usuarioService.actualizarUsuario(id, dto);
-        return ResponseEntity.ok(actualizado);
+        return ResponseEntity.ok(aModelo(actualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -70,5 +88,11 @@ public class UsuarioController {
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         this.usuarioService.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private EntityModel<UsuarioDTO> aModelo(UsuarioDTO dto) {
+        return EntityModel.of(dto,
+                linkTo(methodOn(UsuarioController.class).obtenerPorId(dto.getId())).withSelfRel(),
+                linkTo(methodOn(UsuarioController.class).obtenerTodos()).withRel("usuarios"));
     }
 }
