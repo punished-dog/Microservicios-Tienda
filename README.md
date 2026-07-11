@@ -32,10 +32,23 @@ Proyecto de una tienda electrónica hecho con Spring Boot y arquitectura de micr
 - Bean Validation
 - SLF4J
 - Swagger (springdoc)
+- Spring HATEOAS (usuarios y productos)
+- Datafaker (usuarios y productos)
 - JUnit 5 + Mockito
 - Docker
 
-## Cómo correrlo en local (IntelliJ)
+## Datos de prueba con Faker
+
+Los servicios `usuarios` y `productos` tienen un endpoint que genera datos aleatorios para no tener que crearlos uno por uno:
+
+```
+POST /api/usuarios/generar/5
+POST /api/productos/generar/5
+```
+
+El número al final es la cantidad de registros a crear.
+
+## Ejecución local (IntelliJ)
 
 Hace falta Java 21, Maven y MySQL corriendo en localhost:3306 (usuario `root`, clave `system`).
 
@@ -65,23 +78,15 @@ Para revisar que todos quedaron registrados: http://localhost:8761
 
 Todo se prueba a través del gateway en el puerto 9090, por ejemplo `http://localhost:9090/api/usuarios`.
 
-## Cómo correrlo con Docker
+## Ejecución local con Docker
 
-Con Docker Desktop abierto, primero se compila cada servicio:
-
-```bash
-cd usuarios && mvn package -DskipTests && cd ..
-```
-
-(y así con cada uno)
-
-Y después se levanta todo junto:
+Con Docker Desktop abierto:
 
 ```bash
 docker-compose up --build
 ```
 
-El docker-compose arma un MySQL, crea las 10 bases con el `init.sql`, y levanta Eureka, el gateway y los 10 servicios. Igual que antes, se revisa en http://localhost:8761.
+Esto compila los 12 servicios, levanta un MySQL con las 10 bases (usando `init.sql`) y registra todo en Eureka. Se revisa igual en http://localhost:8761.
 
 Para bajar todo:
 
@@ -89,23 +94,22 @@ Para bajar todo:
 docker-compose down
 ```
 
-## Despliegue en Render
+## Ejecución remota (Render)
 
-El `render.yaml` tiene la configuración para subir los servicios a Render. La base de datos se usa online (por ejemplo con Aiven, MySQL gratis).
+El sistema también está desplegado en Render, con la base de datos en MySQL online (Aiven).
 
-Pasos:
+- Eureka: https://eureka-server-sh1l.onrender.com
+- Gateway: https://gateway-xxex.onrender.com
 
-1. Crear una base MySQL en https://console.aiven.io y anotar host, puerto, base, usuario y contraseña.
-2. Subir el proyecto a GitHub.
-3. En Render: New → Blueprint → elegir el repo. Detecta el `render.yaml`.
-4. Completar las variables de cada servicio con los datos de la base:
-   - `SPRING_DATASOURCE_URL` → `jdbc:mysql://HOST:PUERTO/BASE?ssl-mode=REQUIRED`
-   - `SPRING_DATASOURCE_USERNAME`
-   - `SPRING_DATASOURCE_PASSWORD`
-   - `EUREKA_URL` → la url del eureka en Render con `/eureka/` al final
-5. Aplicar y esperar a que queden arriba.
+Todas las peticiones remotas se hacen contra el Gateway, igual que en local pero con esta URL en vez de `localhost:9090`, por ejemplo:
 
-Con el plan gratis los servicios se apagan si no se usan por un rato, así que la primera llamada después puede demorar un poco.
+```
+https://gateway-xxex.onrender.com/api/usuarios
+```
+
+Para volver a desplegar desde cero: el `render.yaml` en la raíz del proyecto configura los servicios. En Render se crea un Blueprint apuntando a este repositorio, y se completan las variables de entorno (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `EUREKA_URL`) con los datos de la base MySQL online.
+
+El plan gratuito de Render apaga los servicios tras un rato sin uso, así que la primera petición después de eso puede demorar unos segundos en responder.
 
 ## Rutas del Gateway
 
@@ -146,6 +150,10 @@ Algunos servicios llaman a otros para validar datos antes de guardar:
 - inventario consulta productos
 
 Para verlo funcionando hay endpoints como `GET /api/pedidos/1/usuario`, que trae los datos del usuario desde el servicio de usuarios.
+
+## Postman
+
+La colección `Tienda-Microservicios.postman.json` trae las variables `gateway` y `eureka` apuntando a local. Para probar contra Render, se reemplaza el valor de `gateway` por el de la variable `gateway_render` que también viene incluida.
 
 ## Pruebas
 
